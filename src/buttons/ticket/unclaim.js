@@ -36,7 +36,7 @@ module.exports = {
         ticket['claimerID'] = null;
         client.tickets.set(interaction.channel.id, ticket);
 
-        await interaction.channel.send(`Ticket unclaimed by ${interaction.user}!`)
+        await interaction.channel.send(`📌 Ticket unclaimed by ${interaction.user}!`)
 
         await interaction.update({components: [row]});
     }

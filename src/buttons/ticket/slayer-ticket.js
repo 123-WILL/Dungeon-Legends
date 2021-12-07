@@ -92,12 +92,28 @@ module.exports = {
                 // @ts-ignore
                 const [option] = interaction.values;
                 ticket['quantity'] = +option;
-                //
+                
                 ticket['price'] = pricing[ticket['tier'] - 2] * ticket['quantity'];
+
+                var si = [
+                    { value: 1, symbol: "" },
+                    { value: 1E3, symbol: "K" },
+                    { value: 1E6, symbol: "M" },
+                    { value: 1E9, symbol: "B" },
+                ];
+                var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+                var i;
+                // for negative value is work
+                for (i = si.length - 1; i > 0; i--) {
+                    if (ticket['price'] >= si[i].value) {
+                        break;
+                    }
+                }
+                const displayPrice = (ticket['price'] / si[i].value).toFixed(2).replace(rx, "$1") + si[i].symbol;
 
                 const embed = {
                     title: "__**Carry Info:**__",
-                    description: `**Type:** ${ticket['type']}\n**Tier:** ${ticket['tier'].toString()}\n**IGN:** ${ticket['ign']}\n**Price:** ${ticket['price']}\n**Quantity:** ${ticket['quantity'].toString()}`,
+                    description: `**Type:** ${ticket['type']}\n**Tier:** ${ticket['tier'].toString()}\n**IGN:** ${ticket['ign']}\n**Price:** ${displayPrice}\n**Quantity:** ${ticket['quantity'].toString()}`,
                     color: 7506394,
                     footer: {
                         text: "Dungeon Legends",
@@ -143,9 +159,25 @@ module.exports = {
 
             ticket['price'] = pricing[ticket['tier'] - 2] * ticket['quantity'];
 
+            var si = [
+                { value: 1, symbol: "" },
+                { value: 1E3, symbol: "K" },
+                { value: 1E6, symbol: "M" },
+                { value: 1E9, symbol: "B" },
+            ];
+            var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+            var i;
+            // for negative value is work
+            for (i = si.length - 1; i > 0; i--) {
+                if (ticket['price'] >= si[i].value) {
+                    break;
+                }
+            }
+            const displayPrice = (ticket['price'] / si[i].value).toFixed(2).replace(rx, "$1") + si[i].symbol;
+
             const embed = {
                 title: "__**Carry Info:**__",
-                description: `**Type:** ${ticket['type']}\n**Tier:** ${ticket['tier'].toString()}\n**IGN:** ${ticket['ign']}\n**Price:** ${ticket['price']}\n**Quantity:** ${ticket['quantity'].toString()}`,
+                description: `**Type:** ${ticket['type']}\n**Tier:** ${ticket['tier'].toString()}\n**IGN:** ${ticket['ign']}\n**Price:** ${displayPrice}\n**Quantity:** ${ticket['quantity'].toString()}`,
                 color: 7506394,
                 footer: {
                     text: "Dungeon Legends",

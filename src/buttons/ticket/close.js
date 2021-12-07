@@ -11,7 +11,7 @@ module.exports = {
             return;
         }
 
-        await interaction.reply (`Ticket closed by ${interaction.user}.`)
+        await interaction.reply (`🔒 Ticket closed by ${interaction.user}.`)
 
         if (ticket['claimerID'] != null) {
             const logChannel = await interaction.guild.channels.fetch(process.env.log_channel_id);

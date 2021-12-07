@@ -14,9 +14,10 @@ module.exports = {
         await interaction.deferReply({ ephemeral: true });
 
         if (client.buyers.has(user.id)) {
-            if (interaction.guild.channels.cache.get(client.buyers.get(user.id).channel.id) === undefined) {
+            const openUser = client.buyers.get(user.id);
+            if (interaction.guild.channels.cache.get(openUser['channel']) === undefined) {
                 client.buyers.delete(user.id);
-                client.tickets.delete(client.buyers.get(user.id).channel.id);
+                client.tickets.delete(openUser['channel']);
             } else {
                 interaction.editReply({ content: `<@!${user.id}> Ticket already open.`, ephemeral: true });
                 return;

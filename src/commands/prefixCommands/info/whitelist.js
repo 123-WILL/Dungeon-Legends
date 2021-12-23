@@ -11,7 +11,6 @@ module.exports = {
             ign: args[1]
         });
         await newWhitelisted.save().catch((err) => console.log(err));
-        message.member.roles.add(message.guild.roles.cache.find(role => role.name === 'Whitelisted')).catch(console.error);
 
         const embed = {
             title: `✅  ${args[1]} successfully whitelisted!`,

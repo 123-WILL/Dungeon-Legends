@@ -1,5 +1,7 @@
+const mongoose = require('mongoose');
 const ticketModel = require('../../schemas/ticket');
 const buyerModel = require('../../schemas/buyer');
+const carrierModel = require('../../schemas/carrier')
 
 module.exports = {
     data: {
@@ -14,7 +16,7 @@ module.exports = {
             return;
         }
 
-        await interaction.reply (`🔒 Ticket closed by ${interaction.user}.`)
+        await interaction.reply(`🔒 Ticket closed by ${interaction.user}.`)
 
         if (ticket['claimerID'] != null) {
             const logChannel = await interaction.guild.channels.fetch(process.env.log_channel_id);
@@ -28,6 +30,27 @@ module.exports = {
                 }
             };
             await logChannel.send({ embeds: [logEmbed] });
+
+            var scoreFromCarry = 0;
+            if ( ticket['score'] === 'completion' || ticket['score'] === null ) scoreFromCarry = ticket['quantity'];
+            else if ( ticket['score'] === 'S' ) scoreFromCarry = 2 * ticket['quantity'];
+            else scoreFromCarry = 3 * ticket['quantity'];
+
+            if (client.carriers.has(ticket['claimerID'])) {
+                const carrier = client.carriers.get(ticket['claimerID']);
+                client.carriers.set(ticket['claimerID'], { carrierScore: carrier['carrierScore'] + scoreFromCarry })
+
+                const query = { discordID: ticket['claimerID'] };
+                await carrierModel.findOneAndUpdate(query, { carrierScore: carrier['carrierScore'] + scoreFromCarry }).catch((err) => console.log(err));
+            } else {
+                client.carriers.set(ticket['claimerID'], { carrierScore: scoreFromCarry })
+                const newCarrier = new carrierModel({
+                    _id: mongoose.Types.ObjectId(),
+                    discordID: ticket['claimerID'],
+                    carrierScore: scoreFromCarry
+                });
+                await newCarrier.save().catch((err) => console.log(err));
+            }
         }
 
         interaction.channel.messages.fetch().then(async (messages) => {
@@ -54,8 +77,8 @@ module.exports = {
             client.buyers.delete(ticket['buyer']);
             client.tickets.delete(interaction.channel.id);
 
-            await ticketModel.findOneAndDelete({channelID: interaction.channel.id});
-            await buyerModel.findOneAndDelete({channelId: interaction.channel.id});
+            await ticketModel.findOneAndDelete({ channelID: interaction.channel.id });
+            await buyerModel.findOneAndDelete({ channelId: interaction.channel.id });
 
             await interaction.channel.delete().catch(() => { });
         }

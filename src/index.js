@@ -6,6 +6,7 @@ client.slashCommands = new Collection();
 client.prefixCommands = new Collection();
 client.tickets = new Collection();
 client.buyers = new Collection();
+client.carriers = new Collection();
 client.buttons = new Collection();
 
 require('dotenv').config();

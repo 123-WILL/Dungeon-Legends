@@ -75,12 +75,12 @@ module.exports = {
 
         await interaction.editReply({ content: 'Ticket opened' });
 
-        try {
-            const collector = await channel.awaitMessages({ filter: msg => msg.author.id === interaction.user.id, max: 1 });
-            const ign = collector.first();
-            if (ign) userIgn = ign.content;
-        } catch (err) {
-            console.log(err);
+        const collector = await channel.awaitMessages({ filter: msg => msg.author.id === interaction.user.id, max: 1 }).catch(err => console.log(`No interactions were collected.`));;
+        const ign = collector.first();
+        if (ign) { 
+            userIgn = ign.content;
+        } else { 
+            return ;
         }
 
         client.tickets.set(channel.id, { ign: userIgn, carrierRoleID: null, buyer: user.id, claimerID: null, floor: null, tier: null, type: null, price: null, quantity: null, score: null, questionNumber: 0 });

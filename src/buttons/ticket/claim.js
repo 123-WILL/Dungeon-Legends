@@ -1,3 +1,4 @@
+const ticketModel = require('../../schemas/ticket');
 const { MessageActionRow, MessageButton } = require('discord.js');
 
 module.exports = {
@@ -34,6 +35,8 @@ module.exports = {
         
         ticket['claimerID'] = interaction.user.id;
         client.tickets.set(interaction.channel.id, ticket);
+        const query = { channelID: interaction.channel.id };
+        await ticketModel.findOneAndUpdate(query, { claimerID: ticket['claimerID'] });
 
         await interaction.channel.send(`📌 Ticket claimed by ${interaction.user}!`)
 

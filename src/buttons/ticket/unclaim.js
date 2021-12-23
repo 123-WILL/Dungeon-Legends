@@ -1,3 +1,4 @@
+const ticketModel = require('../../schemas/ticket');
 const { MessageActionRow, MessageButton } = require('discord.js');
 
 module.exports = {
@@ -6,7 +7,7 @@ module.exports = {
     },
     async execute(interaction, client) {
         const ticket = client.tickets.get(interaction.channel.id);
-        
+
         if (!ticket) return;
 
         if (interaction.user.id === ticket['buyer']) {
@@ -27,7 +28,7 @@ module.exports = {
                     .setLabel('🔒 Close')
                     .setStyle('DANGER')
             )
-            
+
         const carrierRole = await interaction.guild.roles.fetch(ticket['carrierRoleID']);
         if (carrierRole) await interaction.channel.permissionOverwrites.edit(carrierRole, { SEND_MESSAGES: true, VIEW_CHANNEL: true });
         const pastClaimer = await interaction.guild.members.cache.get(ticket['claimerID']);
@@ -35,9 +36,11 @@ module.exports = {
 
         ticket['claimerID'] = null;
         client.tickets.set(interaction.channel.id, ticket);
+        const query = { channelID: interaction.channel.id };
+        await ticketModel.findOneAndUpdate(query, { claimerID: null });
 
         await interaction.channel.send(`📌 Ticket unclaimed by ${interaction.user}!`)
 
-        await interaction.update({components: [row]});
+        await interaction.update({ components: [row] });
     }
 }

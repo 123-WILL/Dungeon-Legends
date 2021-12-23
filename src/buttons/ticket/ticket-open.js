@@ -1,4 +1,7 @@
 const { MessageActionRow, MessageButton } = require('discord.js');
+const mongoose = require('mongoose');
+const ticketModel = require('../../schemas/ticket');
+const buyerModel = require('../../schemas/buyer');
 
 module.exports = {
     data: {
@@ -18,6 +21,9 @@ module.exports = {
             if (interaction.guild.channels.cache.get(openUser['channel']) === undefined) {
                 client.buyers.delete(user.id);
                 client.tickets.delete(openUser['channel']);
+
+                await ticketModel.findOneAndDelete({ buyer: user.id });
+                await buyerModel.findOneAndDelete({ buyerID: user.id });
             } else {
                 interaction.editReply({ content: `<@!${user.id}> Ticket already open.`, ephemeral: true });
                 return;
@@ -51,6 +57,12 @@ module.exports = {
                 ],
             });
             client.buyers.set(user.id, { channel: channel.id })
+            const newBuyer = new buyerModel({
+                _id: mongoose.Types.ObjectId(),
+                buyerID: user.id,
+                channelId: channel.id
+            });
+            await newBuyer.save().catch((err) => console.log(err));
         } catch (e) {
             console.log(e);
         }
@@ -63,11 +75,17 @@ module.exports = {
 
         await interaction.editReply({ content: 'Ticket opened' });
 
-        const collector = await channel.awaitMessages({ filter: msg => msg.author.id === interaction.user.id, max: 1 });
-        const ign = collector.first();
-        ign ? userIgn = ign.content : userIgn = null;
+        try {
+            const collector = await channel.awaitMessages({ filter: msg => msg.author.id === interaction.user.id, max: 1 });
+            const ign = collector.first();
+            if (ign) userIgn = ign.content;
+        } catch (err) {
+            console.log(err);
+        }
 
         client.tickets.set(channel.id, { ign: userIgn, carrierRoleID: null, buyer: user.id, claimerID: null, floor: null, tier: null, type: null, price: null, quantity: null, score: null, questionNumber: 0 });
+        const newTicket = new ticketModel({ _id: mongoose.Types.ObjectId(), channelID: channel.id, ign: userIgn, buyer: user.id, questionNumber: 0 });
+        await newTicket.save().catch((err) => console.log(err));
 
         const row = new MessageActionRow()
             .addComponents(

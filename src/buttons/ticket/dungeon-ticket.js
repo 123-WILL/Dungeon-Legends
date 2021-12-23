@@ -1,4 +1,5 @@
 const { MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
+const ticketModel = require('../../schemas/ticket');
 
 const pricing = {
     floors: [
@@ -203,7 +204,8 @@ module.exports = {
             if (carrierRole) await interaction.channel.permissionOverwrites.edit(carrierRole, { SEND_MESSAGES: true, VIEW_CHANNEL: true });
 
             await interaction.channel.send(`${carrierRole}, ${interaction.user.username} has requested a carry`);
-
+            const query = { channelID: interaction.channel.id };
+            await ticketModel.findOneAndUpdate(query, {carrierRoleID: ticket['carrierRoleID'], floor: ticket['floor'], tier: ticket['tier'], type: ticket['type'], price: ticket['price'], quantity: ticket['quantity'], score: ticket['score'], questionNumber: ticket['questionNumber']});
         }
     }
 }

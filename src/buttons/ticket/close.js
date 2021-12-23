@@ -1,3 +1,6 @@
+const ticketModel = require('../../schemas/ticket');
+const buyerModel = require('../../schemas/buyer');
+
 module.exports = {
     data: {
         name: 'close'
@@ -50,6 +53,10 @@ module.exports = {
         if (interaction.channel.deletable && !interaction.channel.deleted) {
             client.buyers.delete(ticket['buyer']);
             client.tickets.delete(interaction.channel.id);
+
+            await ticketModel.findOneAndDelete({channelID: interaction.channel.id});
+            await buyerModel.findOneAndDelete({channelId: interaction.channel.id});
+
             await interaction.channel.delete().catch(() => { });
         }
     }

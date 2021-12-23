@@ -13,6 +13,6 @@ module.exports = (client) => {
             }
         }
         mongoose.Promise = global.Promise;
-        await mongoose.connect(process.env.dbToken);
+        await mongoose.connect(process.env.dbToken).catch((err) => console.log(err));
     };
 };

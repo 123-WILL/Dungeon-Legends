@@ -1,4 +1,5 @@
 const { MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
+const ticketModel = require('../../schemas/ticket');
 
 const pricing = [300000, 500000, 2000000, 200000];
 
@@ -92,7 +93,7 @@ module.exports = {
                 // @ts-ignore
                 const [option] = interaction.values;
                 ticket['quantity'] = +option;
-                
+
                 ticket['price'] = pricing[ticket['tier'] - 2] * ticket['quantity'];
 
                 var si = [
@@ -151,6 +152,8 @@ module.exports = {
                 await interaction.channel.send(`${carrierRole}, ${interaction.user.username} has requested a carry`);
 
                 client.tickets.set(interaction.channel.id, ticket)
+                const query = { channelID: interaction.channel.id };
+                await ticketModel.findOneAndUpdate(query, { carrierRoleID: ticket['carrierRoleID'], floor: ticket['floor'], tier: ticket['tier'], type: ticket['type'], price: ticket['price'], quantity: ticket['quantity'], score: ticket['score'], questionNumber: ticket['questionNumber'] })
             }
         }
         else if (questionNumber === 3) {
@@ -215,6 +218,8 @@ module.exports = {
             await interaction.channel.send(`${carrierRole}, ${interaction.user.username} has requested a carry`);
 
             client.tickets.set(interaction.channel.id, ticket)
+            const query = { channelID: interaction.channel.id };
+            await ticketModel.findOneAndUpdate(query, {carrierRoleID: ticket['carrierRoleID'], floor: ticket['floor'], tier: ticket['tier'], type: ticket['type'], price: ticket['price'], quantity: ticket['quantity'], score: ticket['score'], questionNumber: ticket['questionNumber']})
         }
     }
 }

@@ -5,7 +5,7 @@ module.exports = {
         if (!message.member.roles.cache.has(process.env.staff_role_id)) return;
         if (!args[1]) return;
 
-        var res = '';
+        var res = [];
 
         const carrierRoleIds = process.env.carrier_role_ids.split(', ');
         const carriers = [];
@@ -27,21 +27,30 @@ module.exports = {
         carriers.forEach(carrierID => {
             if (client.carriers.has(carrierID)) {
                 const carrier = client.carriers.get(carrierID);
-                if (carrier.carrierScore < args[1]) res += `\n  \`\` - \`\` <@!${carrierID}> (${carrier.carrierScore} points)`
+                if (carrier.carrierScore < args[1]) res.push(`\n  \`\` - \`\` <@!${carrierID}> (${carrier.carrierScore} points)`);
             } else {
-                res += `\n  \`\` - \`\` <@!${carrierID}> (0 points)`;
+                res.push(`\n  \`\` - \`\` <@!${carrierID}> (0 points)`);
             }
         })
 
-        const embed = {
-            title: `**__Carriers To Purge__** (less than ${args[1]} score):`,
-            description: res,
-            color: 7506394,
-            footer: {
-                text: "Dungeon Legends",
-                icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
+        var currentOutput = '';
+        for (var i = 0; i < res.length; i++) {
+            if ( i % 88 === 0 && i !== 0 || i === res.length - 1) {
+                const embed = {
+                    title: `**__Carriers To Purge__** (less than ${args[1]} score):`,
+                    description: currentOutput,
+                    color: 7506394,
+                    footer: {
+                        text: `Dungeon Legends (${i % 88 > 0 ? Math.trunc(i/88) + 1 : i/88}/${res.length % 88 > 0 ? Math.trunc(res.length/88) + 1 : res.length/88})`,
+                        icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
+                    }
+                }
+                await message.reply({ embeds: [embed] });
+                currentOutput = '';
+            }
+            else { 
+                currentOutput += res[i] 
             }
         }
-        await message.reply({ embeds: [embed] });
     },
 };

@@ -25,7 +25,7 @@ const prefixCommandFolders = fs.readdirSync('./src/commands/prefixCommands');
     client.handleSlashCommands(slashCommandFolders, './src/commands/slashCommands');
     client.handlePrefixCommands(prefixCommandFolders, './src/commands/prefixCommands')
     client.handleButtons();
-    client.login(process.env.token);
     client.dbLogin();
     client.dbClone();
+    client.login(process.env.token);
 })();

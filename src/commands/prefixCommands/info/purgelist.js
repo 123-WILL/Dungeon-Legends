@@ -35,6 +35,7 @@ module.exports = {
 
         var currentOutput = '';
         for (var i = 0; i < res.length; i++) {
+            currentOutput += res[i] 
             if ( i % 88 === 0 && i !== 0 || i === res.length - 1) {
                 const embed = {
                     title: `**__Carriers To Purge__** (less than ${args[1]} score):`,
@@ -47,9 +48,6 @@ module.exports = {
                 }
                 await message.reply({ embeds: [embed] });
                 currentOutput = '';
-            }
-            else { 
-                currentOutput += res[i] 
             }
         }
     },

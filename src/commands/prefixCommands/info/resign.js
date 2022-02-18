@@ -1,4 +1,5 @@
 const { MessageActionRow, MessageButton } = require('discord.js');
+const carrierModel = require('../../../schemas/carrier');
 
 module.exports = {
     name: 'resign',
@@ -44,6 +45,7 @@ module.exports = {
                 .catch(() => {
                     res.editReply({ content: 'Failed to remove your roles ❌' });
                 });
+            await carrierModel.findOneAndDelete({ discordID: message.author.id }).catch((err) => console.log(err));                
         } else {
             res.editReply({ content: '❌' });
         }

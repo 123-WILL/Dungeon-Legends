@@ -29,7 +29,6 @@ module.exports = {
                 carrierScore = carrier.carrierScore;
                 res.push({id: carrierID, score: carrierScore});
             } else {
-                message.channel.send(`carrier <@${carrierID}> not found`);
                 res.push({id: carrierID, score: 0});
             }
         })

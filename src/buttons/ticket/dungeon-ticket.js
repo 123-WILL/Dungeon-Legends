@@ -4,59 +4,46 @@ const ticketModel = require('../../schemas/ticket');
 const pricing = {
     floors: [
         {
-            carry: { completion: 25000 },
-            bulk: { completion: 50000 },
+            completion: 25000,
         },
         {
-            carry: { completion: 50000 },
-            bulk: { completion: 100000 },
+            completion: 50000,
         },
         {
-            carry: { completion: 75000 },
-            bulk: { completion: 150000 },
+            completion: 75000,
         },
         {
-            carry: { completion: 400000 },
-            bulk: { completion: 333000 },
+            completion: 400000,
         },
         {
-            carry: { completion: 350000, S: 600000, 'S+': 850000 },
-            bulk: { completion: 300000, S: 500000, 'S+': 715000 },
+            completion: 350000, S: 650000, 'S+': 850000,
         },
         {
-            carry: { completion: 700000, S: 1100000, 'S+': 1500000 },
-            bulk: { completion: 600000, S: 930000, 'S+': 1250000 },
+            completion: 700000, S: 1100000, 'S+': 1500000,
         },
         {
-            carry: { completion: 4000000, S: 6000000, 'S+': 10000000 },
-            bulk: { completion: 4000000, S: 6000000, 'S+': 10000000 },
+            completion: 4000000, S: 6000000, 'S+': 10000000,
         },
     ],
 
     master_floors: [
         {
-            carry: { S: 1000000 },
-            bulk: { S: 1000000 },
+            completion: 1000000,
         },
         {
-            carry: { S: 2000000 },
-            bulk: { S: 2000000 },
+            completion: 2000000,
         },
         {
-            carry: { S: 3500000 },
-            bulk: { S: 3500000 },
+            completion: 3500000,
         },
         {
-            carry: { S: 10000000 },
-            bulk: { S: 10000000 },
+            completion: 10000000,
         },
         {
-            carry: { S: 5000000 },
-            bulk: { S: 5000000 },
+            completion: 5000000,
         },
         {
-            carry: { S: 7000000 },
-            bulk: { S: 7000000 },
+            completion: 7000000,
         },
     ],
 };
@@ -98,7 +85,7 @@ module.exports = {
             );
 
             await interaction.update({ embeds: [{ title: `What floor do you need a carry in? 1-${len}`, author: { icon_url: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
-            ticket['questionNumber'] = 2;
+            ticket['questionNumber'] = !!(ticket['type'] === 'Master Mode') ? 3 : 2;
             client.tickets.set(interaction.channel.id, ticket)
         }
         else if (questionNumber === 2) {
@@ -109,7 +96,7 @@ module.exports = {
 
             const master = !!(ticket['type'] === 'Master Mode');
             const floorPrices = pricing[master ? 'master_floors' : 'floors'][ticket['floor'] - 1];
-            for (const key of Object.keys(floorPrices.carry)) {
+            for (const key of Object.keys(floorPrices)) {
                 row.addComponents(new MessageButton().setCustomId(`dungeon-${interaction.user.id}v1_${key}`).setLabel(key).setStyle('PRIMARY'));
             }
 
@@ -118,10 +105,17 @@ module.exports = {
             client.tickets.set(interaction.channel.id, ticket)
         }
         else if (questionNumber === 3) {
-            const pickedScore = interaction.customId.slice(interaction.user.id.length + 11);
+            const master = !!(ticket['type'] === 'Master Mode');
 
-            ticket['score'] = pickedScore;
-
+            if (!master) {
+                const pickedScore = interaction.customId.slice(interaction.user.id.length + 11);
+                ticket['score'] = pickedScore;    
+            } else {
+                const [option] = interaction.values;
+                ticket['floor'] = +option;
+                ticket['score'] = 'completion'; 
+            }
+            
             const row = new MessageActionRow().addComponents(
                 new MessageSelectMenu()
                     .setCustomId(`dungeon-${interaction.user.id}-quantity`)
@@ -147,7 +141,7 @@ module.exports = {
 
             const master = !!(ticket['type'] === 'Master Mode');
             const floor = pricing[master ? 'master_floors' : 'floors'][ticket['floor'] - 1];
-            ticket['price'] = (ticket['quantity'] > 1 ? floor.bulk[ticket['score']] : floor.carry[ticket['score']]) * ticket['quantity'];
+            ticket['price'] = (floor[ticket['score']]) * ticket['quantity'];
 
             var si = [
                 { value: 1, symbol: "" },
@@ -205,7 +199,7 @@ module.exports = {
 
             await interaction.channel.send(`${carrierRole}, ${interaction.user.username} has requested a carry`);
             const query = { channelID: interaction.channel.id };
-            await ticketModel.findOneAndUpdate(query, {carrierRoleID: ticket['carrierRoleID'], floor: ticket['floor'], tier: ticket['tier'], type: ticket['type'], price: ticket['price'], quantity: ticket['quantity'], score: ticket['score'], questionNumber: ticket['questionNumber']});
+            await ticketModel.findOneAndUpdate(query, { carrierRoleID: ticket['carrierRoleID'], floor: ticket['floor'], tier: ticket['tier'], type: ticket['type'], price: ticket['price'], quantity: ticket['quantity'], score: ticket['score'], questionNumber: ticket['questionNumber'] });
         }
     }
 }

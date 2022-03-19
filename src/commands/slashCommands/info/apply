@@ -1,0 +1,91 @@
+const { Constants } = require('discord.js')
+const { hypixel, errors } = require('../../../utils/hypixel');
+const { get } = require('axios').default
+const iconURL = 'https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif'
+const dungeonReqs = [
+    {level: 25, secrets: 4000 },
+    {level: 25, secrets: 4000 },
+    {level: 25, secrets: 4000 },
+    {level: 28, secrets: 4000 },
+    {level: 30, secrets: 4000 },
+    {level: 32, secrets: 4000 },
+    {level: 35, secrets: 4000 },
+    {level: 35, secrets: 4000 },
+    {level: 38, secrets: 4000 },
+    {level: 37, secrets: 4000 },
+    {level: 42, secrets: 4000 },
+    {level: 42, secrets: 4000 },
+    {level: 46, secrets: 4000 },
+]
+const slayerReqs = [20, 30, 100]
+
+module.exports = {
+    data: {
+        name: 'apply',
+        description: 'Apply to be a Dungeon Legends carrier.',
+        options: [
+            {
+                name: 'ign',
+                description: 'Your Minecraft In Game Name (IGN)',
+                required: true,
+                type: Constants.ApplicationCommandOptionTypes.STRING,
+            },
+        ],
+    },
+    async execute(interaction) {
+        const { options } = interaction;
+        const anyCaseIGN = options.getString('ign');
+        let ignAccurate = false;
+
+        await interaction.deferReply({ ephemeral: true })
+
+        let eligibleFor = [];
+
+        hypixel.getPlayer(anyCaseIGN).then(player => {
+            const IGN = player.nickname;
+            const uuid = player.uuid;
+            if (socialMedia.length != 0) {
+                for (var i = 0; i < socialMedia.length; i++) {
+                    if (socialMedia[i].id === 'DISCORD') {
+                        if (`${interaction.member.user.username}#${interaction.member.user.discriminator}` === socialMedia[i].link) {
+                            ignAccurate = true;
+                        }
+                        else {
+                            interaction.editReply({
+                                embeds: [{
+                                    title: '<a:RedCrossAnimation:877671510251274301> Inaccurate IGN!',
+                                    description: `Your Discord account is not linked to that IGN. The linked Discord is currently ${socialMedia[i].link}.`,
+                                    footer: { text: 'Dungeon Legends', iconURL, },
+                                },
+                                ],
+                                ephemeral: true
+                            });
+                            return;
+                        }
+                    }
+                }
+            } else {
+                interaction.editReply({
+                    embeds: [{
+                        title: '<a:RedCrossAnimation:877671510251274301> IGN Could Not be Verified!',
+                        description: `Please link your discord account through hypixel before continuing.`,
+                        footer: { text: 'Dungeon Legends', iconURL, },
+                    },
+                    ],
+                    ephemeral: true
+                });
+                return;
+            }
+        }).catch(e => {
+            interaction.editReply({
+                embeds: [{
+                    title: '<a:RedCrossAnimation:877671510251274301> Application Failed!',
+                    description: `Please try applying again later.`,
+                    footer: { text: 'Dungeon Legends', iconURL, },
+                },
+                ],
+                ephemeral: true
+            });
+        })
+    }
+}

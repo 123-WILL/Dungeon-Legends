@@ -159,11 +159,18 @@ module.exports = {
             }
             const displayPrice = (ticket['price'] / si[i].value).toFixed(2).replace(rx, "$1") + si[i].symbol;
 
+            const summaryEmbed1 = {
+                title: "Dungeon Legends                                                 <:Blank:877701652424040459>",
+                description: "Carry Ticket of Dungeon Legends",
+                color: 5793266,
+                thumbnail: "https://cdn.discordapp.com/emojis/943623937277980702.webp?size=96&quality=lossless"
+            }
+
             const summaryEmbed =
             {
-                title: "__**Carry Info:**__",
-                description: `**Type:** ${ticket['type']}\n**Floor:** ${ticket['floor']}\n**Score:** ${ticket['score']}\n**IGN:** ${ticket['ign']}\n**Price:** ${displayPrice}\n**Quantity:** ${ticket['quantity'].toString()}`,
-                color: 7506394,
+                title: "Carry Information                                                                             <:Blank:877701652424040459>",
+                description: `**Type:** ${ticket['type']}\n\n**Floor:** ${ticket['floor']}\n\n**Score:** ${ticket['score']}\n\n**IGN:** ${ticket['ign']}\n\n**Price:** ${displayPrice}\n\n**Quantity:** ${ticket['quantity'].toString()}`,
+                color: null,
                 footer: {
                     text: "Dungeon Legends",
                     icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
@@ -174,17 +181,17 @@ module.exports = {
                 .addComponents(
                     new MessageButton()
                         .setCustomId(`claim-${interaction.user.id}`)
-                        .setLabel('📌 Claim')
+                        .setLabel('<a:BDL_Check:969173420837326858:> Claim')
                         .setStyle('SUCCESS')
                 )
                 .addComponents(
                     new MessageButton()
                         .setCustomId(`close-${interaction.user.id}`)
-                        .setLabel('🔒 Close')
+                        .setLabel('<a:BDL_Cross:969173420837326858:> Close')
                         .setStyle('DANGER')
                 );
 
-            await interaction.update({ embeds: [summaryEmbed], components: [row] });
+            //await interaction.update({embeds: [summaryEmbed1,summaryEmbed], components: [row] });
 
             const newChannelName = master ? `m${ticket['floor'].toString()}-carry` : `f${ticket['floor'].toString()}-carry`;
             await interaction.channel.setName(newChannelName);
@@ -197,7 +204,9 @@ module.exports = {
             if (staffRole) await interaction.channel.permissionOverwrites.edit(staffRole, { SEND_MESSAGES: true, VIEW_CHANNEL: true });
             if (carrierRole) await interaction.channel.permissionOverwrites.edit(carrierRole, { SEND_MESSAGES: true, VIEW_CHANNEL: true });
 
-            await interaction.channel.send(`${carrierRole}, ${interaction.user.username} has requested a carry`);
+            await interaction.channel.send(`<:BDL_DiscordVerified:949046396823171133> ${carrierRole}, ${interaction.user.username} has requested a carry`); //msg
+            await interaction.update({embeds: [summaryEmbed1,summaryEmbed], components: [row] }); //embed
+
             const query = { channelID: interaction.channel.id };
             await ticketModel.findOneAndUpdate(query, { carrierRoleID: ticket['carrierRoleID'], floor: ticket['floor'], tier: ticket['tier'], type: ticket['type'], price: ticket['price'], quantity: ticket['quantity'], score: ticket['score'], questionNumber: ticket['questionNumber'] });
         }

@@ -71,7 +71,7 @@ module.exports = {
 
         let userIgn = null;
 
-        await channel.send(`${user.toString()} Hello!! What is your IGN?`);
+        await channel.send({content: `${user.toString()}`, embeds: [{title: "What is your IGN?                                                                            <:Blank:877701652424040459>"}]});
 
         await interaction.editReply({ content: 'Ticket opened' });
 
@@ -100,9 +100,16 @@ module.exports = {
                     .setLabel('Slayer')
                     .setStyle('PRIMARY')
             );
+            
+            const pinnedEmbed = {
+                title: "Dungeon Legends                                                 <:Blank:877701652424040459>",
+                description: "Carry Ticket of Dungeon Legends",
+                color: 5793266,
+                thumbnail: {"url":"https://cdn.discordapp.com/emojis/943623937277980702.webp?size=96&quality=lossless"}
+            } // will dont touch this jos wanted this here uwu
 
         channel.send({
-            embeds: [{ title: 'Would you like to purchase a dungeon or slayer carry?' }],
+            embeds: [pinnedEmbed,{ title: 'Would you like to purchase a Dungeon or Slayer carry?    <:Blank:877701652424040459>' }],
             components: [row],
         });
     }

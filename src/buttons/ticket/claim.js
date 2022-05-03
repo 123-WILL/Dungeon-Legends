@@ -19,7 +19,7 @@ module.exports = {
             .addComponents(
                 new MessageButton()
                     .setCustomId(`unclaim-${interaction.user.id}`)
-                    .setLabel('📌 Unclaim')
+                    .setLabel(':BDL_Cross: Unclaim')
                     .setStyle('SUCCESS')
             )
             .addComponents(

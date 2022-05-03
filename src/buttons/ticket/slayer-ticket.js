@@ -11,12 +11,20 @@ module.exports = {
         const ticket = client.tickets.get(interaction.channel.id);
         if (!ticket) return;
         const questionNumber = ticket.questionNumber;
+
+        const pinnedEmbed = {
+            title: "Dungeon Legends                                                 <:Blank:877701652424040459>",
+            description: "Carry Ticket of Dungeon Legends",
+            color: 5793266,
+            thumbnail: {"url":"https://cdn.discordapp.com/emojis/943623937277980702.webp?size=96&quality=lossless"}
+        } //will dont touch pls jos wanted this uwu
+
         if (questionNumber === 0) {
             const row = new MessageActionRow()
                 .addComponents(new MessageButton().setCustomId(`slayer-revenant-${interaction.user.id}`).setLabel('Revenant Horror').setStyle('PRIMARY'))
                 .addComponents(new MessageButton().setCustomId(`slayer-voidgloom-${interaction.user.id}`).setLabel('Voidgloom Seraph').setStyle('PRIMARY'));
 
-            await interaction.update({ embeds: [{ title: 'Would you like a Revenant Horror or Voidgloom Seraph carry?', author: { iconURL: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
+            await interaction.update({ embeds: [pinnedEmbed,{ title: 'Would you like a Revenant Horror or Voidgloom Seraph carry?', author: { iconURL: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
             ticket['questionNumber'] = 1;
             client.tickets.set(interaction.channel.id, ticket)
         }
@@ -64,8 +72,8 @@ module.exports = {
                             )
                     );
             }
-            const title = voidgloom ? 'What tier do you need a carry in?' : 'How many carries do you want?';
-            await interaction.update({ embeds: [{ title: title, author: { icon_url: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
+            const title = voidgloom ? 'What tier do you need a carry in?                                                     <:Blank:877701652424040459>' : 'How many carries do you want?                                                       <:Blank:877701652424040459>';
+            await interaction.update({ embeds: [pinnedEmbed,{ title: title, author: { icon_url: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
             ticket['questionNumber'] = 2;
             client.tickets.set(interaction.channel.id, ticket)
         }
@@ -86,7 +94,7 @@ module.exports = {
                         )
                 );
 
-                await interaction.update({ embeds: [{ title: 'How many carries do you want?' }], components: [row] });
+                await interaction.update({embeds: [pinnedEmbed,{ title: 'How many carries do you want?                                                       <:Blank:877701652424040459>' }], components: [row] });
                 ticket['questionNumber'] = 3;
                 client.tickets.set(interaction.channel.id, ticket)
             } else if (interaction.customId === `slayer-${interaction.user.id}rev`) {
@@ -113,9 +121,9 @@ module.exports = {
                 const displayPrice = (ticket['price'] / si[i].value).toFixed(2).replace(rx, "$1") + si[i].symbol;
 
                 const embed = {
-                    title: "__**Carry Info:**__",
-                    description: `**Type:** ${ticket['type']}\n**Tier:** ${ticket['tier'].toString()}\n**IGN:** ${ticket['ign']}\n**Price:** ${displayPrice}\n**Quantity:** ${ticket['quantity'].toString()}`,
-                    color: 7506394,
+                    title: "Carry Information                                                                                   <:Blank:877701652424040459>",
+                    description: `**IGN:** ${ticket['ign']}\n\n**Type:** ${ticket['type']}\n\n**Tier:** ${ticket['tier']}\n\n**Price:** ${displayPrice}\n\n**Quantity:** ${ticket['quantity'].toString()}`,
+                    color: null,
                     footer: {
                         text: "Dungeon Legends",
                         icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
@@ -136,7 +144,6 @@ module.exports = {
                             .setStyle('DANGER')
                     );
 
-                await interaction.update({ embeds: [embed], components: [row] });
 
                 const newChannelName = ticket['type'] === 'Voidgloom Seraph' ? `voidgloom t${ticket['tier'].toString()}-carry` : `rev t${ticket['tier'].toString()}-carry`;
                 await interaction.channel.setName(newChannelName);
@@ -149,7 +156,7 @@ module.exports = {
                 if (staffRole) await interaction.channel.permissionOverwrites.edit(staffRole, { SEND_MESSAGES: true, VIEW_CHANNEL: true });
                 if (carrierRole) await interaction.channel.permissionOverwrites.edit(carrierRole, { SEND_MESSAGES: true, VIEW_CHANNEL: true });
 
-                await interaction.channel.send(`${carrierRole}, ${interaction.user.username} has requested a carry`);
+                await interaction.update({ content: `<:BDL_DiscordVerified:949046396823171133> ${carrierRole}, ${interaction.user.username} has requested a carry.`,embeds: [pinnedEmbed,embed], components: [row] });
 
                 client.tickets.set(interaction.channel.id, ticket)
                 const query = { channelID: interaction.channel.id };
@@ -179,9 +186,9 @@ module.exports = {
             const displayPrice = (ticket['price'] / si[i].value).toFixed(2).replace(rx, "$1") + si[i].symbol;
 
             const embed = {
-                title: "__**Carry Info:**__",
-                description: `**Type:** ${ticket['type']}\n**Tier:** ${ticket['tier'].toString()}\n**IGN:** ${ticket['ign']}\n**Price:** ${displayPrice}\n**Quantity:** ${ticket['quantity'].toString()}`,
-                color: 7506394,
+                title: "Carry Information                                                                                   <:Blank:877701652424040459>",
+                description: `**IGN:** ${ticket['ign']}\n\n**Type:** ${ticket['type']}\n\n**Tier:** ${ticket['tier']}\n\n**Price:** ${displayPrice}\n\n**Quantity:** ${ticket['quantity'].toString()}`,
+                color: null,
                 footer: {
                     text: "Dungeon Legends",
                     icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
@@ -202,7 +209,7 @@ module.exports = {
                         .setStyle('DANGER')
                 );
 
-            await interaction.update({ embeds: [embed], components: [row] });
+            
 
             const newChannelName = ticket['type'] === 'Voidgloom Seraph' ? `voidgloom t${ticket['tier'].toString()}-carry` : `rev t${ticket['tier'].toString()}-carry`;
             await interaction.channel.setName(newChannelName);
@@ -215,7 +222,7 @@ module.exports = {
             if (staffRole) await interaction.channel.permissionOverwrites.edit(staffRole, { SEND_MESSAGES: true, VIEW_CHANNEL: true });
             if (carrierRole) await interaction.channel.permissionOverwrites.edit(carrierRole, { SEND_MESSAGES: true, VIEW_CHANNEL: true });
 
-            await interaction.channel.send(`${carrierRole}, ${interaction.user.username} has requested a carry`);
+            await interaction.update({ Content: `<:BDL_DiscordVerified:949046396823171133> ${carrierRole}, ${interaction.user.username} has requested a carry.`,embeds: [pinnedEmbed,embed], components: [row] });
 
             client.tickets.set(interaction.channel.id, ticket)
             const query = { channelID: interaction.channel.id };

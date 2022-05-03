@@ -1,5 +1,6 @@
 const { Client, Intents, Collection } = require('discord.js');
 const fs = require('fs');
+const keepAlive = require('./server.js')
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS]});
 
 client.slashCommands = new Collection();
@@ -28,4 +29,5 @@ const prefixCommandFolders = fs.readdirSync('./src/commands/prefixCommands');
     client.dbLogin();
     client.dbClone();
     client.login(process.env.token);
+    keepAlive();
 })();

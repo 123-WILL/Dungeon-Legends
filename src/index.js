@@ -29,5 +29,6 @@ const prefixCommandFolders = fs.readdirSync('./src/commands/prefixCommands');
     client.dbLogin();
     client.dbClone();
     client.login(process.env.token);
-    keepAlive();
 })();
+
+keepAlive();

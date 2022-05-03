@@ -56,20 +56,12 @@ module.exports = {
         const ticket = client.tickets.get(interaction.channel.id);
         if (!ticket) return;
         const questionNumber = ticket.questionNumber;
-
-        const pinnedEmbed = {
-            title: "Dungeon Legends                                                 <:Blank:877701652424040459>",
-            description: "Carry Ticket of Dungeon Legends",
-            color: 5793266,
-            thumbnail: {"url":"https://cdn.discordapp.com/emojis/943623937277980702.webp?size=96&quality=lossless"}
-        } //will dont touch pls jos wanted this idk why
-
         if (questionNumber === 0) {
             const row = new MessageActionRow()
                 .addComponents(new MessageButton().setCustomId(`dungeon-${interaction.user.id}catacombs`).setLabel('Catacombs').setStyle('PRIMARY'))
                 .addComponents(new MessageButton().setCustomId(`dungeon-${interaction.user.id}master-mode`).setLabel('Master Mode').setStyle('PRIMARY'));
 
-            await interaction.update({ embeds: [pinnedEmbed,{ title: 'Would you like a carry for Catacombs or Master Mode?   <:Blank:877701652424040459>', author: { iconURL: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
+            await interaction.update({ embeds: [{ title: 'Would you like a carry for catacombs or master mode?', author: { iconURL: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
             ticket['questionNumber'] = 1;
             client.tickets.set(interaction.channel.id, ticket)
         }
@@ -92,7 +84,7 @@ module.exports = {
                     )
             );
 
-            await interaction.update({ embeds: [pinnedEmbed,{ title: `Which floor do you need a carry in?                                           <:Blank:877701652424040459>`, author: { icon_url: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
+            await interaction.update({ embeds: [{ title: `What floor do you need a carry in? 1-${len}`, author: { icon_url: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
             ticket['questionNumber'] = !!(ticket['type'] === 'Master Mode') ? 3 : 2;
             client.tickets.set(interaction.channel.id, ticket)
         }
@@ -108,7 +100,7 @@ module.exports = {
                 row.addComponents(new MessageButton().setCustomId(`dungeon-${interaction.user.id}v1_${key}`).setLabel(key).setStyle('PRIMARY'));
             }
 
-            await interaction.update({ embeds: [pinnedEmbed,{ title: 'What score do you want?                                                              <:Blank:877701652424040459>', author: { icon_url: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
+            await interaction.update({ embeds: [{ title: 'What score do you want?', author: { icon_url: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
             ticket['questionNumber'] = 3;
             client.tickets.set(interaction.channel.id, ticket)
         }
@@ -137,7 +129,7 @@ module.exports = {
                     )
             );
 
-            await interaction.update({ embeds: [pinnedEmbed,{ title: 'How many carries do you want?                                                 <:Blank:877701652424040459>', author: { icon_url: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
+            await interaction.update({ embeds: [{ title: 'How many carries do you want?', author: { icon_url: interaction.user.avatarURL({ dynamic: true }) } }], components: [row] });
             ticket['questionNumber'] = 4;
             client.tickets.set(interaction.channel.id, ticket)
         }
@@ -169,9 +161,9 @@ module.exports = {
 
             const summaryEmbed =
             {
-                title: "Carry Information                                                                             <:Blank:877701652424040459>",
-                description: `**IGN:** ${ticket['ign']}\n\n**Type:** ${ticket['type']}\n\n**Floor:** ${ticket['floor']}\n\n**Score:** ${ticket['score']}\n\n**Quantity:** ${ticket['quantity'].toString()}\n\n**Price:** ${displayPrice}`,
-                color: null,
+                title: "__**Carry Info:**__",
+                description: `**Type:** ${ticket['type']}\n**Floor:** ${ticket['floor']}\n**Score:** ${ticket['score']}\n**IGN:** ${ticket['ign']}\n**Price:** ${displayPrice}\n**Quantity:** ${ticket['quantity'].toString()}`,
+                color: 7506394,
                 footer: {
                     text: "Dungeon Legends",
                     icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
@@ -192,7 +184,7 @@ module.exports = {
                         .setStyle('DANGER')
                 );
 
-                
+            await interaction.update({ embeds: [summaryEmbed], components: [row] });
 
             const newChannelName = master ? `m${ticket['floor'].toString()}-carry` : `f${ticket['floor'].toString()}-carry`;
             await interaction.channel.setName(newChannelName);
@@ -205,8 +197,7 @@ module.exports = {
             if (staffRole) await interaction.channel.permissionOverwrites.edit(staffRole, { SEND_MESSAGES: true, VIEW_CHANNEL: true });
             if (carrierRole) await interaction.channel.permissionOverwrites.edit(carrierRole, { SEND_MESSAGES: true, VIEW_CHANNEL: true });
 
-            await interaction.update({content: `<:BDL_DiscordVerified:949046396823171133> ${carrierRole}, ${interaction.user.username} has requested a carry`,embeds: [pinnedEmbed,summaryEmbed], components: [row] });
-
+            await interaction.channel.send(`${carrierRole}, ${interaction.user.username} has requested a carry`);
             const query = { channelID: interaction.channel.id };
             await ticketModel.findOneAndUpdate(query, { carrierRoleID: ticket['carrierRoleID'], floor: ticket['floor'], tier: ticket['tier'], type: ticket['type'], price: ticket['price'], quantity: ticket['quantity'], score: ticket['score'], questionNumber: ticket['questionNumber'] });
         }

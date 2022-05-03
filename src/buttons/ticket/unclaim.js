@@ -19,7 +19,7 @@ module.exports = {
             .addComponents(
                 new MessageButton()
                     .setCustomId(`claim-${interaction.user.id}`)
-                    .setLabel('📌 Claim')
+                    .setLabel('📌 Claim') 
                     .setStyle('SUCCESS')
             )
             .addComponents(

@@ -11,8 +11,8 @@ module.exports = {
         const { user, guild } = interaction;
         const category = await guild.channels.fetch(process.env.tickets_category);
         if (!category || category.type !== 'GUILD_CATEGORY') {
-            return;
-        }
+            return; 
+        } 
 
         await interaction.deferReply({ ephemeral: true });
 

@@ -1,0 +1,15 @@
+const mongoose = require('mongoose');
+const submitModel = require('../../schemas/application')
+
+module.exports = {
+    data: {
+        name: 'carrierapp-button'
+    },
+    async execute (interaction, client) {
+        await interaction.update({content: null, color: 5793266, embeds: [{title: "Carrier Application", description: "What is your IGN?"}], components: []})
+        
+        const collector = await interaction.channel.awaitMessages({ filter: msg => msg.author.id === interaction.user.id, max: 1 }).catch(err => console.log(`No interactions were collected.`));;
+        const ign = collector.first();
+        //ign: skycrypt: floors: speed proof: activity: last words:
+    }
+}

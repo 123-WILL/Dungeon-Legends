@@ -27,7 +27,7 @@ module.exports = {
                     .setCustomId(`close-${interaction.user.id}`)
                     .setLabel('🔒 Close')
                     .setStyle('DANGER')
-            )
+            );
 
         const carrierRole = await interaction.guild.roles.fetch(ticket['carrierRoleID']);
         if (carrierRole) await interaction.channel.permissionOverwrites.edit(carrierRole, { SEND_MESSAGES: true, VIEW_CHANNEL: true });

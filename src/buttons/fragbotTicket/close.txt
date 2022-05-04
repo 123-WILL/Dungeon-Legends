@@ -1,0 +1,8 @@
+module.exports = {
+    data: {
+        name: 'pong-button'
+    },
+    async execute (interaction, client) {
+        await interaction.channel.edit({});
+    }
+}

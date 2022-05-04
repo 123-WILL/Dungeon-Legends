@@ -10,7 +10,7 @@ module.exports = {
     async execute(interaction, client) {
         const ticket = client.tickets.get(interaction.channel.id);
         if (!ticket) return;
-
+        
         if (interaction.user.id === ticket['buyer']) {
             await interaction.reply({ content: 'You may not close your own ticket.', ephemeral: true });
             return;

@@ -170,7 +170,7 @@ module.exports = {
                 }
             }
 
-            const row = new MessageActionRow()
+                const row = new MessageActionRow()
                 .addComponents(
                     new MessageButton()
                         .setCustomId(`claim-${interaction.user.id}`)

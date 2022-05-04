@@ -1,0 +1,15 @@
+module.exports = {
+    data: {
+        name: 'fragticket-open'
+    },
+    async execute (interaction, client) {
+        interaction.guild.channels.create(`${interaction.user.username}-fragbot`,{type: 'text'}).then((channel) => {
+            channel.setParent('971315722590515271');
+            const embed = {
+                description: '**1. IGN**\n\n**2. Why you need it.**',
+                color: '008B8B',
+            }
+            channel.send({content: "test",embeds: [embed]})
+        })
+    }
+}

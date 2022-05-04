@@ -15,7 +15,7 @@ module.exports = {
         }
             
         const carrierRole = await interaction.guild.roles.fetch(ticket['carrierRoleID']);
-        if (carrierRole) await interaction.channel.permissionOverwrites.edit(carrierRole, { SEND_MESSAGES: false, VIEW_CHANNEL: true });
+        if (carrierRole) await interaction.channel.permissionOverwrites.edit(carrierRole, { SEND_MESSAGES: false, VIEW_CHANNEL: false});
         await interaction.channel.permissionOverwrites.edit(interaction.user, { SEND_MESSAGES: true, VIEW_CHANNEL: true });
         
         ticket['claimerID'] = interaction.user.id;

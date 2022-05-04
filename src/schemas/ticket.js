@@ -7,6 +7,7 @@ const ticketSchema = new mongoose.Schema ({
     carrierRoleID: String, 
     buyer: String, 
     claimerID: String, 
+    partnerID: String,
     floor: Number, 
     tier: Number, 
     type: String, 

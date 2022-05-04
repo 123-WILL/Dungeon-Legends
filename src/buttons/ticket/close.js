@@ -20,16 +20,31 @@ module.exports = {
 
         if (ticket['claimerID'] != null) {
             const logChannel = await interaction.guild.channels.fetch(process.env.log_channel_id);
-            const logEmbed = {
-                title: `__**@${ticket['buyer']}'s Carry Ticket:**__`,
-                description: `**Type of Carry:** ${ticket['type']} ${ticket['type'] === 'Catacombs' || ticket['type'] === 'Master Mode' ? ticket['floor'] : ticket['tier']}\n**Quantity**: ${ticket['quantity']}\n**Completed by:** <@${ticket['claimerID']}>`,
-                color: 7506394,
-                footer: {
-                    text: "Dungeon Legends",
-                    icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
-                }
-            };
-            await logChannel.send({ embeds: [logEmbed] });
+
+            if(ticket['partnerID'] != null){
+                const logEmbed = {
+                    title: `__**@${ticket['buyer']}'s Carry Ticket:**__`,
+                    description: `**Type of Carry:** ${ticket['type']} ${ticket['type'] === 'Catacombs' || ticket['type'] === 'Master Mode' ? ticket['floor'] : ticket['tier']}\n**Quantity**: ${ticket['quantity']}\n**Completed by:**  <@${ticket['claimerID']}> and <@${ticket['partnerID']}>`,
+                    color: 7506394,
+                    footer: {
+                        text: "Dungeon Legends",
+                        icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
+                    }
+                };
+                await logChannel.send({ embeds: [logEmbed] });
+            }
+            else{
+                const logEmbed = {
+                    title: `__**@${ticket['buyer']}'s Carry Ticket:**__`,
+                    description: `**Type of Carry:** ${ticket['type']} ${ticket['type'] === 'Catacombs' || ticket['type'] === 'Master Mode' ? ticket['floor'] : ticket['tier']}\n**Quantity**: ${ticket['quantity']}\n**Completed by:**  <@${ticket['claimerID']}>`,
+                    color: 7506394,
+                    footer: {
+                        text: "Dungeon Legends",
+                        icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
+                    }
+                };
+                await logChannel.send({ embeds: [logEmbed] });
+            }
 
             var scoreFromCarry = 0;
             if ( ticket['score'] === 'completion' || ticket['score'] === null ) scoreFromCarry = ticket['quantity'];
@@ -50,6 +65,23 @@ module.exports = {
                     carrierScore: scoreFromCarry
                 });
                 await newCarrier.save().catch((err) => console.log(err));
+            };
+            if(ticket['partnerID'] != null){
+                if (client.carriers.has(ticket['partnerID'])) {
+                    const carrier = client.carriers.get(ticket['partnerID']);
+                    client.carriers.set(ticket['partnerID'], { carrierScore: carrier['carrierScore'] + scoreFromCarry })
+
+                    const query = { discordID: ticket['claimerID'] };
+                    await carrierModel.findOneAndUpdate(query, { carrierScore: carrier['carrierScore'] + scoreFromCarry }).catch((err) => console.log(err));
+                } else {
+                    client.carriers.set(ticket['partnerID'], { carrierScore: scoreFromCarry })
+                    const newCarrier = new carrierModel({
+                        _id: mongoose.Types.ObjectId(),
+                        discordID: ticket['partnerID'],
+                        carrierScore: scoreFromCarry
+                    });
+                    await newCarrier.save().catch((err) => console.log(err));
+                }
             }
         }
 

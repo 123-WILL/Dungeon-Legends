@@ -1,3 +1,6 @@
+const { SlashCommandUserOption } = require("@discordjs/builders");
+const { Interaction } = require("discord.js");
+
 module.exports = {
     name: 'score',
     description: 'find your current carrier score',
@@ -6,27 +9,46 @@ module.exports = {
         if (message.member._roles.every(r => !roles.includes(r))) return;
 
         var embed;
+        const input = args[1];
 
-        if (client.carriers.has(message.author.id)) {
-            const carrier = client.carriers.get(message.author.id);
-            const score = carrier['carrierScore'];
-            embed = {
-                title: "📝  Your Current Score:",
-                description: `Currently, you have \`\`${score}\`\` points!`,
-                color: 7506394,
-                footer: {
-                    text: "Dungeon Legends",
-                    icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
+        if(input != null && isNaN(input) === false && client.carriers.has(input)) {
+
+                const carrier = client.carriers.get(input);
+                const score = carrier['carrierScore'];
+
+                embed = {
+                    title: `📝  Current Score:`,
+                    description: `<@!${input}> has \`\`${score}\`\` points!`,
+                    color: 7506394,
+                    footer: {
+                        text: "Dungeon Legends",
+                        icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
+                    }
                 }
-            }
-        } else {
-            embed = {
-                title: "📝  Your Current Score:",
-                description: 'Currently, you have \`\`0\`\` points!',
-                color: 7506394,
-                footer: {
-                    text: "Dungeon Legends",
-                    icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
+           
+        }
+        else{
+            if (client.carriers.has(message.author.id)) {
+                const carrier = client.carriers.get(message.author.id);
+                const score = carrier['carrierScore'];
+                embed = {
+                    title: "📝  Your Current Score:",
+                    description: `Currently, you have \`\`${score}\`\` points!`,
+                    color: 7506394,
+                    footer: {
+                        text: "Dungeon Legends",
+                        icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
+                    }
+                }
+            } else {
+                embed = {
+                    title: "📝  Your Current Score:",
+                    description: 'Currently, you have \`\`0\`\` points!',
+                    color: 7506394,
+                    footer: {
+                        text: "Dungeon Legends",
+                        icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
+                    }
                 }
             }
         }

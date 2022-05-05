@@ -2,7 +2,8 @@ module.exports = {
     name: 'leaderboard',
     description: 'lists top 10 carriers',
     async execute(message, client, args) {
-        if (!message.member.roles.cache.has(process.env.staff_role_id)) return;
+        const roles = process.env.floor_role_ids_carriers.split(', ').concat(process.env.tier_role_ids_carriers.split(', ')).concat(process.env.master_role_ids_carriers.split(', ')).concat(process.env.carrier_role_ids.split(', '));
+        if (message.member._roles.every(r => !roles.includes(r))) return;
 
         var res = [];
 

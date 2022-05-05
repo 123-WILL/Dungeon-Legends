@@ -19,7 +19,7 @@ module.exports = {
                 embed = {
                     title: `📝  Current Score:`,
                     description: `<@!${input}> has \`\`${score}\`\` points!`,
-                    color: 7506394,
+                    color: "5865f2",
                     footer: {
                         text: "Dungeon Legends",
                         icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
@@ -31,10 +31,11 @@ module.exports = {
             if (client.carriers.has(message.author.id)) {
                 const carrier = client.carriers.get(message.author.id);
                 const score = carrier['carrierScore'];
+
                 embed = {
                     title: "📝  Your Current Score:",
                     description: `Currently, you have \`\`${score}\`\` points!`,
-                    color: 7506394,
+                    color: "5865f2",
                     footer: {
                         text: "Dungeon Legends",
                         icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
@@ -44,7 +45,7 @@ module.exports = {
                 embed = {
                     title: "📝  Your Current Score:",
                     description: 'Currently, you have \`\`0\`\` points!',
-                    color: 7506394,
+                    color: "5865f2",
                     footer: {
                         text: "Dungeon Legends",
                         icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"

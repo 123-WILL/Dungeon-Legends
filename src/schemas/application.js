@@ -7,7 +7,8 @@ const submitSchema = new mongoose.Schema ({
     speedProof: String,
     floor: String, 
     tier: String, 
-    questionNumber: Number
+    userID: Number,
+    appType: String
 });
 
 const submitModel = mongoose.model('application', submitSchema);

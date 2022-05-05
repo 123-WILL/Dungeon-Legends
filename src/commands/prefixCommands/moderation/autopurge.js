@@ -52,6 +52,10 @@ module.exports = {
                         icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
                     }
                 }
+                
+                const safeRoleId = process.env.safe_role_id;
+                await message.guild.members.cache.forEach(member => {member.roles.remove(safeRoleId)})
+
                 await message.reply({ embeds: [embed] });
                 currentOutput = '';
             }

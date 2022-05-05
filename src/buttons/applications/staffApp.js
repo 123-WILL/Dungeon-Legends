@@ -1,10 +1,13 @@
 const appModel = require('../../schemas/application');
+const { MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
 
 module.exports = {
     data: {
         name: 'staffapp-button'
     },
     async execute (interaction, client) {
+
+
         await interaction.update({content: null, color: 5793266, embeds: [{title: "Staff Application", description: "What is your age? *(15+)*"}], components: []})
         const collector = await interaction.channel.awaitMessages({ filter: msg => msg.author.id === interaction.user.id, max: 1 }).catch(err => console.log(`No interactions were collected.`));
         const age = collector.first();
@@ -40,7 +43,7 @@ module.exports = {
         await interaction.channel.send({embeds: [{title: "Staff Application" ,description: "**Situation 3:** There is a group of people sending NSFW and racist things in General. What do you do?"}] })
         const collector8 = await interaction.channel.awaitMessages({ filter: msg => msg.author.id === interaction.user.id, max: 1 }).catch(err => console.log(`No interactions were collected.`));
         const sit3 = collector8.first();
-
+        
         interaction.channel.send({embeds: [{title: "Do you want to submit this application? (yes/no)"}]})
 
         const yesno = await interaction.channel.awaitMessages({ filter: msg => msg.author.id === interaction.user.id, max: 1 }).catch(err => console.log(`No interactions were collected.`));
@@ -52,11 +55,68 @@ module.exports = {
             const trans = client.channels.cache.get('970209829006237697');
 
             const embed = {
-                title: "Staff Application",
-                description: `**Discord:** <@!${interaction.user.id}>\n\n**Age:** ${age.content}\n\n**Reasoning:** ${reason.content}\n\n**Past Expierence:** ${exp.content}\n\n**About you:** ${abtme.content}\n\n**Mc IGN:** ${ign.content}\n\n**Activity:** ${active.content}\n\n**Situation 1:** ${sit1}\n\n**Situation 2:** ${sit2}\n\n**Situation 3:** ${sit3}`
+                title: "**Staff Application:**",
+                description: `${interaction.user.id}`,
+                fields: [
+                    {
+                        name: "**Discord:**",
+                        value: `<@!${interaction.user.id}>`
+                    },
+                    {
+                        name: "**Age:**",
+                        value: age.content
+                    },
+                    {
+                        name: '**Reasoning:**',
+                        value: reason.content
+                    },
+                    {
+                        name: '**Past expierence:**',
+                        value: exp.content
+                    },
+                    {
+                        name: '**About you:**',
+                        value: abtme.content
+                    },
+                    {
+                        name: "**IGN:**",
+                        value: ign.content
+                    },
+                    {
+                        name: "**Activity:**",
+                        value: active.content
+                    },
+                    {
+                        name: "**Situation 1:**",
+                        value: sit1.content
+                    },
+                    {
+                        name: "**Situation 2:**",
+                        value: sit2.content
+                    },
+                    {
+                        name: "**Situation 3:**",
+                        value: sit3.content
+                    }
+                ],
+                color: "5865f2"
             }
-    
-            trans.send({embeds: [embed]})
+
+            const row = new MessageActionRow()
+            .addComponents(
+                new MessageButton()
+                    .setCustomId(`appDeny`)
+                    .setLabel('❌ Deny')
+                    .setStyle('DANGER')
+            )
+            .addComponents(
+                new MessageButton()
+                    .setCustomId(`appAccept`)
+                    .setLabel('✅ Accept')
+                    .setStyle('SUCCESS')
+            );
+
+            trans.send({embeds: [embed], components: [row]})
 
             await interaction.channel.send({embeds: [{title: "Application Submitted!"}]})
         }

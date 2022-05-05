@@ -4,7 +4,7 @@ module.exports = {
     name: 'resetscores',
     description: 'resets scores.',
     async execute(message, client, args) {
-        if (!process.env.owners.includes(message.author.id)) return;
+        if (!message.member.roles.cache.has(process.env.staff_role_id)) return;
 
         const carrierRoleIds = process.env.carrier_role_ids.split(', ');
         try {
@@ -18,6 +18,8 @@ module.exports = {
                     carrierModel.findOneAndUpdate(query, { carrierScore: 0 }).catch((err) => console.log(err));
                 })
             })
+
+
         } catch (err) {
             console.error(err);
         }

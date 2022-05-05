@@ -163,7 +163,7 @@ module.exports = {
             {
                 title: "__**Carry Info:**__",
                 description: `**Type:** ${ticket['type']}\n**Floor:** ${ticket['floor']}\n**Score:** ${ticket['score']}\n**IGN:** ${ticket['ign']}\n**Price:** ${displayPrice}\n**Quantity:** ${ticket['quantity'].toString()}`,
-                color: 7506394,
+                color: "5865f2",
                 footer: {
                     text: "Dungeon Legends",
                     icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"

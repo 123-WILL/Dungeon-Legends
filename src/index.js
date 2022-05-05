@@ -1,7 +1,7 @@
 const { Client, Intents, Collection } = require('discord.js');
 const fs = require('fs');
 const keepAlive = require('./server.js')
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS]});
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.DIRECT_MESSAGES]});
 
 client.slashCommands = new Collection();
 client.prefixCommands = new Collection();

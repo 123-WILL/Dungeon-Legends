@@ -25,7 +25,7 @@ module.exports = {
                 const logEmbed = {
                     title: `__**@${ticket['buyer']}'s Carry Ticket:**__`,
                     description: `**Type of Carry:** ${ticket['type']} ${ticket['type'] === 'Catacombs' || ticket['type'] === 'Master Mode' ? ticket['floor'] : ticket['tier']}\n**Quantity**: ${ticket['quantity']}\n**Completed by:**  <@${ticket['claimerID']}> and <@${ticket['partnerID']}>`,
-                    color: 7506394,
+                    color: "5865f2",
                     footer: {
                         text: "Dungeon Legends",
                         icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
@@ -34,10 +34,11 @@ module.exports = {
                 await logChannel.send({ embeds: [logEmbed] });
             }
             else{
+
                 const logEmbed = {
                     title: `__**@${ticket['buyer']}'s Carry Ticket:**__`,
-                    description: `**Type of Carry:** ${ticket['type']} ${ticket['type'] === 'Catacombs' || ticket['type'] === 'Master Mode' ? ticket['floor'] : ticket['tier']}\n**Quantity**: ${ticket['quantity']}\n**Completed by:**  <@${ticket['claimerID']}>`,
-                    color: 7506394,
+                    description: `**Type of Carry:** ${ticket['type']} ${ticket['type'] === 'Catacombs' || ticket['type'] === 'Master Mode' ? `${ticket['floor']}\n**Score:** ${ticket['score']}`: ticket['tier']}\n**Quantity**: ${ticket['quantity']}\n**Completed by:**  <@${ticket['claimerID']}>`,
+                    color: "5865f2",
                     footer: {
                         text: "Dungeon Legends",
                         icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
@@ -57,6 +58,7 @@ module.exports = {
 
                 const query = { discordID: ticket['claimerID'] };
                 await carrierModel.findOneAndUpdate(query, { carrierScore: carrier['carrierScore'] + scoreFromCarry }).catch((err) => console.log(err));
+
             } else {
                 client.carriers.set(ticket['claimerID'], { carrierScore: scoreFromCarry })
                 const newCarrier = new carrierModel({
@@ -73,6 +75,7 @@ module.exports = {
 
                     const query = { discordID: ticket['claimerID'] };
                     await carrierModel.findOneAndUpdate(query, { carrierScore: carrier['carrierScore'] + scoreFromCarry }).catch((err) => console.log(err));
+
                 } else {
                     client.carriers.set(ticket['partnerID'], { carrierScore: scoreFromCarry })
                     const newCarrier = new carrierModel({
@@ -90,7 +93,7 @@ module.exports = {
             const transcriptEmbed = {
                 title: `__**Transcript for ${ticket['buyer']}'s ${ticket['type']} ${ticket['type'] === 'Catacombs' || ticket['type'] === 'Master Mode' ? 'Floor ' + ticket['floor'] : 'Tier ' + ticket['tier']} Carry:**__`,
                 description: output,
-                color: 7506394,
+                color: "5865f2",
                 footer: {
                     text: `Dungeon Legends Carry Transcript`,
                     icon_url: "https://cdn.discordapp.com/attachments/827662473880535042/827913817064734801/standard_14.gif"
@@ -114,5 +117,15 @@ module.exports = {
 
             await interaction.channel.delete().catch(() => { });
         }
+            const carrier = client.carriers.get(ticket['claimerID']);
+            const score = carrier['carrierScore'];
+            const role = process.env.safe_role_id;
+            
+                if(score >= 10){
+                    await interaction.member.roles.add(role);
+                }
+                else{
+                    await interaction.member.roles.remove(role);
+                }
     }
 }

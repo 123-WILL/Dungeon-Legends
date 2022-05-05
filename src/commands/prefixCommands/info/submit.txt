@@ -18,7 +18,7 @@ module.exports = {
 		const row = new MessageActionRow()
 		.addComponents(new MessageButton().setCustomId(`carrierapp-button`).setLabel('Carrier').setStyle('PRIMARY').setDisabled(false))
 		.addComponents(new MessageButton().setCustomId(`slayerapp-button`).setLabel('Slayer').setStyle('PRIMARY').setDisabled(false))
-		.addComponents(new MessageButton().setCustomId(`staffapp-button`).setLabel('Staff').setStyle('PRIMARY').setDisabled(true))
+		.addComponents(new MessageButton().setCustomId(`staffapp-button`).setLabel('Staff').setStyle('PRIMARY').setDisabled(false))
 
         message.member.send({content: null, embeds:[embed], components: [row]})
 

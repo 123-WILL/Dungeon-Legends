@@ -5,7 +5,7 @@ module.exports = {
     description: 'removes carrier roles from all carriers below a certain score, then resets scores.',
     async execute(message, client, args) {
         if (!process.env.owners.includes(message.author.id)) return;
-        if (!args[1]) return;
+        //if (!args[1]) return;
 
         const carrierRoleIds = process.env.carrier_role_ids.split(', ');
         const allCarrierRoles = process.env.floor_role_ids_carriers.split(', ').concat(process.env.tier_role_ids_carriers.split(', ')).concat(process.env.master_role_ids_carriers.split(', ')).concat(process.env.carrier_role_ids.split(', '));
@@ -18,15 +18,19 @@ module.exports = {
                 const carriersWithRole = message.guild.roles.cache.get(carrierRoleID).members;
                 carriersWithRole.forEach(carrier => {
                     if (client.carriers.has(carrier.id)) {
-                        let score = client.carriers.get(carrier.id).carrierScore;
-                        if (score < args[1]) {
+                        //let score = client.carriers.get(carrier.id).carrierScore;
+                        let member = message.guild.members.cache.get(carrier.id);
+                        const safeRole = member.roles.cache;
+                        const role = process.env.safe_role_id;
+
+                        if (safeRole.has(role)) {
+                            let query = { discordID: carrier.id };
+                            carrierModel.findOneAndUpdate(query, { carrierScore: 0 }).catch((err) => console.log(err));
+                        } else {
                             carrier.roles.remove(allCarrierRoles);
                             carrierModel.findOneAndDelete({ discordID: carrier.id }).catch((err) => console.log(err));
                             client.carriers.delete(carrier.id);
                             if (!purged.includes(carrier.id)) purged.push(carrier.id);
-                        } else {
-                            let query = { discordID: carrier.id };
-                            carrierModel.findOneAndUpdate(query, { carrierScore: 0 }).catch((err) => console.log(err));
                         }
                     } else {
                         carrier.roles.remove(allCarrierRoles);

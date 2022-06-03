@@ -124,8 +124,5 @@ module.exports = {
                 if(score >= 10){
                     await interaction.member.roles.add(role);
                 }
-                else{
-                    await interaction.member.roles.remove(role);
-                }
     }
 }

@@ -1,4 +1,4 @@
-const appModel = require('../../schemas/application');
+const submitModel = require('../../schemas/application');
 const { MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
 
 module.exports = {
@@ -7,6 +7,7 @@ module.exports = {
     },
     async execute (interaction, client) {
 
+        const userid = interaction.user.id;
 
         await interaction.update({content: null, color: 5793266, embeds: [{title: "Staff Application", description: "What is your age? *(15+)*"}], components: []})
         const collector = await interaction.channel.awaitMessages({ filter: msg => msg.author.id === interaction.user.id, max: 1 }).catch(err => console.log(`No interactions were collected.`));
@@ -56,7 +57,7 @@ module.exports = {
 
             const embed = {
                 title: "**Staff Application:**",
-                description: `${interaction.user.id}`,
+                description: `staffApplication-${interaction.user.id}`,
                 fields: [
                     {
                         name: "**Discord:**",
@@ -116,7 +117,9 @@ module.exports = {
                     .setStyle('SUCCESS')
             );
 
-            trans.send({embeds: [embed], components: [row]})
+            let sent = await trans.send({embeds: [embed], components: [row]})
+            let messageId = sent.id;
+            await submitModel.create({appType: 'staff', userID: userid, messageID: messageId, _id: `staffApp-${messageId}`})
 
             await interaction.channel.send({embeds: [{title: "Application Submitted!"}]})
         }

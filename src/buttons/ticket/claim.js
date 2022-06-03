@@ -23,7 +23,7 @@ module.exports = {
         const query = { channelID: interaction.channel.id };
         await ticketModel.findOneAndUpdate(query, { claimerID: ticket['claimerID'] });
 
-        await interaction.channel.send(`📌 Ticket claimed by ${interaction.user}!`)
+        await interaction.channel.send(`📌 <@!${ticket['buyer']}> Your ticket has been claimed by ${interaction.user}!`)
         const typeAndFloor = ticket['type']+ticket['floor'];
         if(typeAndFloor === 'Master Mode6' || typeAndFloor === 'Master Mode5' || typeAndFloor === 'Master Mode4' || typeAndFloor === 'Master Mode2' || typeAndFloor === 'Catacombs7'){
 

@@ -5,7 +5,7 @@ module.exports = {
     description: 'for carrier applications and such',
 	async execute(message, client) {
 		try{
-		if (!process.env.owners.split(", ").includes(message.member.id)) return;
+		//if (!process.env.owners.split(", ").includes(message.member.id)) return;
 		
 		await message.reply({ 
 			content: 'Application sent! Please check your DMs.',

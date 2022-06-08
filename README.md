@@ -1,7 +1,7 @@
 
 # Dungeon Legends Bot
 
-Official discord for Dungeon Legends (previously discord.gg/dungeonlegends), a hypixel skyblock dungeon carry server with 7k members.
+Official discord bot for Dungeon Legends (previously discord.gg/dungeonlegends), a hypixel skyblock dungeon carry server with 7k members.
 
 
 ## Features
